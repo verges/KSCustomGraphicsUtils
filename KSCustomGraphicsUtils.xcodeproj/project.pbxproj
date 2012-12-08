@@ -6,11 +6,26 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXFileReference section */
+		B5DF3994167386BC00897027 /* KSCustomSegmentedControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSCustomSegmentedControl.h; sourceTree = "<group>"; };
+		B5DF3995167386BC00897027 /* KSCustomSegmentedControl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSCustomSegmentedControl.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
 /* Begin PBXGroup section */
 		B5DF398A1673862700897027 = {
 			isa = PBXGroup;
 			children = (
+				B5DF39931673869D00897027 /* KSCustomSegmentedControl */,
 			);
+			sourceTree = "<group>";
+		};
+		B5DF39931673869D00897027 /* KSCustomSegmentedControl */ = {
+			isa = PBXGroup;
+			children = (
+				B5DF3994167386BC00897027 /* KSCustomSegmentedControl.h */,
+				B5DF3995167386BC00897027 /* KSCustomSegmentedControl.m */,
+			);
+			path = KSCustomSegmentedControl;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
