@@ -10,4 +10,6 @@
 
 @interface KSCustomSegmentedControl : UIView
 
+- (void)initWithButtons:(NSArray *)aButtons separators:(NSArray *)aSeparators;
+
 @end
