@@ -21,12 +21,18 @@
         buttons = aButtons;
         separators = aSeparators;
 
+        if (buttons.count != separators.count + 1) {
+            @throw [NSException exceptionWithName:@"wrong array count exception"
+                                           reason:@"buttons array should have one element more than separators array"
+                                         userInfo:nil];
+        }
+
         for (UIButton * button in buttons) {
             if ([button isKindOfClass:[UIButton class]]) {
                 [self addSubview:button];
             } else{
                 @throw [NSException exceptionWithName:@"incompatible type exception"
-                                               reason:@"subvie is ought to be a UIButton" userInfo:nil];
+                                               reason:@"subview is ought to be a UIButton" userInfo:nil];
             }
         }
         
@@ -35,7 +41,7 @@
                 [self addSubview:separator];
             } else{
                 @throw [NSException exceptionWithName:@"incompatible type exception"
-                                               reason:@"subvie is ought to be a UIView" userInfo:nil];
+                                               reason:@"subview is ought to be a UIView" userInfo:nil];
             }
         }
     }
