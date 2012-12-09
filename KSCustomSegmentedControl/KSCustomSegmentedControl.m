@@ -13,35 +13,56 @@
 @private
     NSMutableArray * buttons;
     NSMutableArray * separators;
+    NSMutableArray * leftActiveSeparators;
+    NSMutableArray * rightActiveSeparators;
+    __weak id <KSCustomSegmentedControlDelegate> delegate;
+    CGFloat separatorWidth;
+    UIButton * selectedButton;
 }
 
-- (id)initWithButtons:(NSArray *)aButtons separators:(NSArray *)aSeparators {
+@synthesize delegate;
+
+- (id)initWithButtons:(NSArray *)aButtons separator:(UIImage *)separator
+leftSelectedSeparator:(UIImage *)leftSelectedSeparator
+        rightSelectedSeparator:(UIImage *)rightSelectedSeparator
+        separatorWidth:(CGFloat)aSeparatorWidth {
     self = [super initWithFrame:CGRectZero];
     if (self) {
         buttons = [NSMutableArray arrayWithArray:aButtons];
-        separators = [NSMutableArray arrayWithArray:aSeparators];
-
-        if (buttons.count != separators.count + 1) {
-            @throw [NSException exceptionWithName:@"wrong array count exception"
-                                           reason:@"buttons array should have one element more than separators array"
-                                         userInfo:nil];
-        }
+        separators = [[NSMutableArray alloc] init];
+        leftActiveSeparators = [[NSMutableArray alloc] init];
+        rightActiveSeparators = [[NSMutableArray alloc] init];
+        UIImageView * separatorView;
+        UIImageView * leftActiveSeparatorView;
+        UIImageView * rightActiveSeparatorView;
+        separatorWidth = aSeparatorWidth;
 
         for (UIButton * button in buttons) {
             if ([button isKindOfClass:[UIButton class]]) {
+                [button addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
                 [self addSubview:button];
-            } else{
+                if (button != [buttons lastObject]) {
+                    separatorView = [[UIImageView alloc] initWithImage:
+                            [separator resizableImageWithCapInsets:
+                                    UIEdgeInsetsMake(0, 0, 0, 0)]];
+                    [separators addObject:separatorView];
+                    [self addSubview:separatorView];
+
+                    leftActiveSeparatorView = [[UIImageView alloc] initWithImage:
+                            [leftSelectedSeparator resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)]];
+                    leftActiveSeparatorView.hidden = YES;
+                    [leftActiveSeparators addObject:leftActiveSeparatorView];
+                    [self addSubview:leftActiveSeparatorView];
+
+                    rightActiveSeparatorView = [[UIImageView alloc] initWithImage:
+                            [rightSelectedSeparator resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)]];
+                    rightActiveSeparatorView.hidden = YES;
+                    [rightActiveSeparators addObject:rightActiveSeparatorView];
+                    [self addSubview:rightActiveSeparatorView];
+                }
+            } else {
                 @throw [NSException exceptionWithName:@"incompatible type exception"
                                                reason:@"subview is ought to be a UIButton" userInfo:nil];
-            }
-        }
-        
-        for (UIView * separator in separators) {
-            if ([separator isKindOfClass:[UIView class]]) {
-                [self addSubview:separator];
-            } else{
-                @throw [NSException exceptionWithName:@"incompatible type exception"
-                                               reason:@"subview is ought to be a UIView" userInfo:nil];
             }
         }
     }
@@ -51,31 +72,70 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
 
-    UIView * tempSeparator;
+    UIImageView * tempSeparator;
     CGFloat currentLeft = 0;
     NSInteger i = 0;
 
     for (UIButton * button in buttons) {
         if ([button isKindOfClass:[UIButton class]]) {
             button.frame = CGRectMake(currentLeft,
-                    0, button.bounds.size.width, self.bounds.size.height);
+                    0, (self.bounds.size.width - separatorWidth * (buttons.count - 1))/buttons.count, self.bounds.size.height);
 
             currentLeft += button.bounds.size.width;
 
-            tempSeparator = [separators objectAtIndex:i];
-            if ([tempSeparator isKindOfClass:[UIView class]]) {
-                tempSeparator.frame = CGRectMake(currentLeft, 0, tempSeparator.bounds.size.width, self.bounds.size.height);
-            } else{
-                @throw [NSException exceptionWithName:@"incompatible type exception"
-                                               reason:@"subview is ought to be a UIView" userInfo:nil];
+            if (i < buttons.count - 1) {
+                tempSeparator = [separators objectAtIndex:i];
+                tempSeparator.frame = CGRectMake(currentLeft, 0, separatorWidth, self.bounds.size.height);
+
+                tempSeparator = [leftActiveSeparators objectAtIndex:i];
+                tempSeparator.frame = CGRectMake(currentLeft, 0, separatorWidth, self.bounds.size.height);
+
+                tempSeparator = [rightActiveSeparators objectAtIndex:i];
+                tempSeparator.frame = CGRectMake(currentLeft, 0, separatorWidth, self.bounds.size.height);
+
+                currentLeft += separatorWidth;
             }
-            currentLeft += tempSeparator.bounds.size.width;
             i++;
         } else{
             @throw [NSException exceptionWithName:@"incompatible type exception"
                                            reason:@"subview is ought to be a UIButton" userInfo:nil];
         }
     }
+}
+
+- (void)buttonClicked:(UIButton *)sender {
+
+    NSInteger newIndex = [buttons indexOfObject:sender];
+    NSInteger oldIndex = -1;
+    if (selectedButton) {
+        oldIndex = [buttons indexOfObject:selectedButton];
+        [selectedButton setSelected:NO];
+    }
+
+    [sender setSelected:YES];
+
+    if (oldIndex >= 0) {
+        if (oldIndex != 0) {
+            ((UIView *) [leftActiveSeparators objectAtIndex:oldIndex - 1]).hidden = YES;
+            ((UIView *) [separators objectAtIndex:oldIndex - 1]).hidden = NO;
+        }
+        if (oldIndex < buttons.count - 1) {
+            ((UIView *) [rightActiveSeparators objectAtIndex:oldIndex]).hidden = YES;
+            ((UIView *)[separators objectAtIndex:oldIndex]).hidden = NO;
+        }
+    }
+
+    if (newIndex != 0) {
+        ((UIView *) [separators objectAtIndex:newIndex - 1]).hidden = YES;
+        ((UIView *) [leftActiveSeparators objectAtIndex:newIndex -1]).hidden = NO;
+    }
+    if (newIndex < buttons.count - 1) {
+        ((UIView *)[separators objectAtIndex:newIndex]).hidden = YES;
+        ((UIView *) [rightActiveSeparators objectAtIndex:newIndex]).hidden = NO;
+    }
+
+    selectedButton = sender;
+    [delegate ksCustomSegmentedControlChangedSelectedIndexTo:newIndex];
 }
 
 @end
