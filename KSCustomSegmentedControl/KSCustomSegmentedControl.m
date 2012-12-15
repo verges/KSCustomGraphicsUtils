@@ -40,6 +40,7 @@ leftSelectedSeparator:(UIImage *)leftSelectedSeparator
         for (UIButton * button in buttons) {
             if ([button isKindOfClass:[UIButton class]]) {
                 [button addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
+
                 [self addSubview:button];
                 if (button != [buttons lastObject]) {
                     separatorView = [[UIImageView alloc] initWithImage:
@@ -137,5 +138,14 @@ leftSelectedSeparator:(UIImage *)leftSelectedSeparator
     selectedButton = sender;
     [delegate ksCustomSegmentedControlChangedSelectedIndexTo:newIndex];
 }
+
+- (void)selectSegmentAtIndex:(NSInteger)index {
+    [self buttonClicked:[buttons objectAtIndex:index]];
+}
+
+- (NSInteger)selectedSegment {
+    return [buttons indexOfObject:selectedButton];
+}
+
 
 @end

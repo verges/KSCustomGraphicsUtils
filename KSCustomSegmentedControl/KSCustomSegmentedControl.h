@@ -20,5 +20,7 @@
 @property (nonatomic, weak, readwrite) id <KSCustomSegmentedControlDelegate> delegate;
 
 - (id)initWithButtons:(NSArray *)aButtons separator:(UIImage *)separator leftSelectedSeparator:(UIImage *)leftSelectedSeparator rightSelectedSeparator:(UIImage *)rightSelectedSeparator separatorWidth:(CGFloat)aSeparatorWidth;
+- (void)selectSegmentAtIndex:(NSInteger)index;
+- (NSInteger)selectedSegment;
 
 @end
