@@ -113,11 +113,32 @@
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    for (UIView * element in menuElements) {
-        //if (scrollView.contentOffset > element)
-    }
+    if (menuElements.count > 0) {
 
-    NSLog(@"%f", scrollView.contentOffset.x);
+        CGFloat firstElementHalfWidth = ((UIView *)[menuElements objectAtIndex:0]).bounds.size.width/2;
+
+        UIView * chosenElement;
+
+        if (scrollView.contentOffset.x < 0) {
+            chosenElement = [menuElements objectAtIndex:0];
+        } else if (scrollView.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth > ((UIView *)[menuElements lastObject]).frame.origin.x) {
+            chosenElement = [menuElements lastObject];
+        } else {
+            for (UIView * element in menuElements) {
+               if (scrollView.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth > element.frame.origin.x &&
+                       scrollView.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth < element.frame.origin.x + element.bounds.size.width) {
+                    chosenElement = element;
+               }
+            }
+        }
+
+        [self scrollToElement:chosenElement];
+        if ([delegate respondsToSelector:@selector(elementSelectedAtIndex)]) {
+                [delegate elementSelectedAtIndex:[menuElements indexOfObject:chosenElement]];
+        }
+
+        NSLog(@"%f", scrollView.contentOffset.x);
+    }
 }
 
 
