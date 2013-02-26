@@ -6,9 +6,20 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol KSHorizontalScrollingMenuDelegate <NSObject>
 
-@interface KSHorizontalScrollingMenu : UIView
+@required
+    - (void)elementSelectedAtIndex:(NSInteger)index;
+@end
 
+@interface KSHorizontalScrollingMenu : UIView <UIScrollViewDelegate>
+
+@property (nonatomic, unsafe_unretained, readwrite) id<KSHorizontalScrollingMenuDelegate> delegate;
+
+-(id)initWithFrame:(CGRect)frame andElements:(NSArray *)elements;
 - (void)setBackgroundImage:(UIImage *)image;
+- (void)selectElementAtIndex:(NSInteger)index;
+- (void)addElementAtIndex:(NSInteger)index;
+- (void)removeElementAtIndex:(NSInteger)index;
 
 @end

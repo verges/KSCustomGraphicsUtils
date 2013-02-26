@@ -3,32 +3,43 @@
 // rtulwin@gmail.com
 //
 
-
 #import <CoreGraphics/CoreGraphics.h>
 #import "KSHorizontalScrollingMenu.h"
-
 
 @implementation KSHorizontalScrollingMenu {
     UIScrollView * menuScroll;
     UIImageView * backgroundImageView;
 
     NSMutableArray * menuElements;
+    __unsafe_unretained id <KSHorizontalScrollingMenuDelegate> delegate;
 }
+
+@synthesize delegate;
 
 -(id)initWithFrame:(CGRect)frame andElements:(NSArray *)elements {
     self = [super initWithFrame: frame];
     if (self) {
+
+        backgroundImageView = [[UIImageView alloc] init];
+        [self addSubview:backgroundImageView];
+
         menuScroll = [[UIScrollView alloc] initWithFrame:CGRectZero];
+        menuScroll.showsHorizontalScrollIndicator = NO;
+        [menuScroll setCanCancelContentTouches:YES];
+        //menuScroll.pagingEnabled = YES;
+        menuScroll.delegate = self;
         [self addSubview:menuScroll];
 
         menuElements = [NSMutableArray arrayWithArray:elements];
 
         for (UIView * element in menuElements) {
+            UITapGestureRecognizer * tapGestureRecognizer = [[UITapGestureRecognizer alloc]
+                    initWithTarget:self
+                            action:@selector(objectTapped:)];
+            [element addGestureRecognizer:tapGestureRecognizer];
+            element.userInteractionEnabled = YES;
             [menuScroll addSubview:element];
         }
-
-        backgroundImageView = [[UIImageView alloc] init];
-        [self addSubview:backgroundImageView];
     }
 
     return self;
@@ -63,8 +74,51 @@
     }
 }
 
--(void)setBackgroundImage:(UIImage *)image {
+- (void)objectTapped:(UITapGestureRecognizer *)sender {
+
+    [menuScroll setContentOffset:CGPointMake(sender.view.frame.origin.x - menuScroll.bounds.size.width/2 +
+            sender.view.bounds.size.width/2, 0) animated:YES];
+
+    [self selectElementAtIndex:[menuElements indexOfObject:sender.view]];
+}
+
+- (void)scrollToIndex:(NSInteger)index {
+    UIView * view = [menuElements objectAtIndex:index];
+
+    [self scrollToElement:view];
+}
+
+- (void)scrollToElement:(UIView *)element {
+    [menuScroll setContentOffset:CGPointMake(element.frame.origin.x - menuScroll.bounds.size.width/2 +
+            element.bounds.size.width/2, 0) animated:YES];
+}
+
+- (void)setBackgroundImage:(UIImage *)image {
     [backgroundImageView setImage:image];
 }
+
+- (void)selectElementAtIndex:(NSInteger)index {
+    [self scrollToIndex:index];
+    if ([delegate respondsToSelector:@selector(elementSelectedAtIndex)]) {
+        [delegate elementSelectedAtIndex:index];
+    }
+}
+
+- (void)addElementAtIndex:(NSInteger)index1 {
+
+}
+
+- (void)removeElementAtIndex:(NSInteger)index1 {
+
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    for (UIView * element in menuElements) {
+        //if (scrollView.contentOffset > element)
+    }
+
+    NSLog(@"%f", scrollView.contentOffset.x);
+}
+
 
 @end
