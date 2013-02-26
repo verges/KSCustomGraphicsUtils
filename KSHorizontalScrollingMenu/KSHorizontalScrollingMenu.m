@@ -99,7 +99,7 @@
 
 - (void)selectElementAtIndex:(NSInteger)index {
     [self scrollToIndex:index];
-    if ([delegate respondsToSelector:@selector(elementSelectedAtIndex)]) {
+    if ([delegate respondsToSelector:@selector(elementSelectedAtIndex:)]) {
         [delegate elementSelectedAtIndex:index];
     }
 }
@@ -112,34 +112,43 @@
 
 }
 
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self animateToClosestElement];
+}
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate) {
+        [self animateToClosestElement];
+    }
+}
+
+- (void)animateToClosestElement {
     if (menuElements.count > 0) {
 
         CGFloat firstElementHalfWidth = ((UIView *)[menuElements objectAtIndex:0]).bounds.size.width/2;
 
         UIView * chosenElement;
 
-        if (scrollView.contentOffset.x < 0) {
+        if (menuScroll.contentOffset.x <= 0.0) {
             chosenElement = [menuElements objectAtIndex:0];
-        } else if (scrollView.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth > ((UIView *)[menuElements lastObject]).frame.origin.x) {
+        } else if (menuScroll.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth > ((UIView *)[menuElements lastObject]).frame.origin.x) {
             chosenElement = [menuElements lastObject];
         } else {
             for (UIView * element in menuElements) {
-               if (scrollView.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth > element.frame.origin.x &&
-                       scrollView.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth < element.frame.origin.x + element.bounds.size.width) {
+               if (menuScroll.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth > element.frame.origin.x &&
+                       menuScroll.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth < element.frame.origin.x + element.bounds.size.width) {
                     chosenElement = element;
                }
             }
         }
 
         [self scrollToElement:chosenElement];
-        if ([delegate respondsToSelector:@selector(elementSelectedAtIndex)]) {
+        if ([delegate respondsToSelector:@selector(elementSelectedAtIndex:)]) {
                 [delegate elementSelectedAtIndex:[menuElements indexOfObject:chosenElement]];
         }
 
-        NSLog(@"%f", scrollView.contentOffset.x);
+        NSLog(@"%f", menuScroll.contentOffset.x);
     }
 }
-
 
 @end
