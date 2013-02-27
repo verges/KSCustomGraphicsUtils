@@ -22,5 +22,6 @@
 
 - (void)addElement:(UIView *)element atIndex:(NSInteger)index;
 - (void)removeElementAtIndex:(NSInteger)index;
+- (void)setupWithElements:(NSArray *)elements;
 
 @end
