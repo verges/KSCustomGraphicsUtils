@@ -19,7 +19,8 @@
 -(id)initWithFrame:(CGRect)frame andElements:(NSArray *)elements;
 - (void)setBackgroundImage:(UIImage *)image;
 - (void)selectElementAtIndex:(NSInteger)index;
-- (void)addElementAtIndex:(NSInteger)index;
+
+- (void)addElement:(UIView *)element atIndex:(NSInteger)index;
 - (void)removeElementAtIndex:(NSInteger)index;
 
 @end

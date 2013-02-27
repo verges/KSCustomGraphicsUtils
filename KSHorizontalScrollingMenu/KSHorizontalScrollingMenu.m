@@ -30,15 +30,17 @@
         menuScroll.delegate = self;
         [self addSubview:menuScroll];
 
-        menuElements = [NSMutableArray arrayWithArray:elements];
+        if (elements) {
+            menuElements = [NSMutableArray arrayWithArray:elements];
 
-        for (UIView * element in menuElements) {
-            UITapGestureRecognizer * tapGestureRecognizer = [[UITapGestureRecognizer alloc]
-                    initWithTarget:self
-                            action:@selector(objectTapped:)];
-            [element addGestureRecognizer:tapGestureRecognizer];
-            element.userInteractionEnabled = YES;
-            [menuScroll addSubview:element];
+            for (UIView * element in menuElements) {
+                UITapGestureRecognizer * tapGestureRecognizer = [[UITapGestureRecognizer alloc]
+                        initWithTarget:self
+                                action:@selector(objectTapped:)];
+                [element addGestureRecognizer:tapGestureRecognizer];
+                element.userInteractionEnabled = YES;
+                [menuScroll addSubview:element];
+            }
         }
     }
 
@@ -104,11 +106,13 @@
     }
 }
 
-- (void)addElementAtIndex:(NSInteger)index1 {
-
+- (void)addElement:(UIView *)element atIndex:(NSInteger)index {
+//    if (!menuElements) {
+//        menuElements =
+//    }
 }
 
-- (void)removeElementAtIndex:(NSInteger)index1 {
+- (void)removeElementAtIndex:(NSInteger)index {
 
 }
 
