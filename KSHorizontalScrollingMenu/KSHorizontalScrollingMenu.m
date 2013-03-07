@@ -11,7 +11,7 @@
     UIImageView * backgroundImageView;
 
     NSMutableArray * menuElements;
-    __unsafe_unretained id <KSHorizontalScrollingMenuDelegate> delegate;
+    __weak id <KSHorizontalScrollingMenuDelegate> delegate;
 }
 
 @synthesize delegate;
@@ -26,7 +26,6 @@
         menuScroll = [[UIScrollView alloc] initWithFrame:CGRectZero];
         menuScroll.showsHorizontalScrollIndicator = NO;
         [menuScroll setCanCancelContentTouches:YES];
-        //menuScroll.pagingEnabled = YES;
         menuScroll.delegate = self;
         [self addSubview:menuScroll];
 
@@ -132,8 +131,8 @@
             chosenElement = [menuElements lastObject];
         } else {
             for (UIView * element in menuElements) {
-               if (menuScroll.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth > element.frame.origin.x &&
-                       menuScroll.contentOffset.x  + self.bounds.size.width/2 - firstElementHalfWidth < element.frame.origin.x + element.bounds.size.width) {
+               if (menuScroll.contentOffset.x  + self.bounds.size.width/2 > element.frame.origin.x &&
+                       menuScroll.contentOffset.x  + self.bounds.size.width/2 < element.frame.origin.x + element.bounds.size.width) {
                     chosenElement = element;
                }
             }

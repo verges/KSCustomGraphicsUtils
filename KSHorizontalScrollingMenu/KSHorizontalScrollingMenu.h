@@ -14,7 +14,7 @@
 
 @interface KSHorizontalScrollingMenu : UIView <UIScrollViewDelegate>
 
-@property (nonatomic, unsafe_unretained, readwrite) id<KSHorizontalScrollingMenuDelegate> delegate;
+@property (nonatomic, weak, readwrite) id<KSHorizontalScrollingMenuDelegate> delegate;
 
 -(id)initWithFrame:(CGRect)frame andElements:(NSArray *)elements;
 - (void)setBackgroundImage:(UIImage *)image;
