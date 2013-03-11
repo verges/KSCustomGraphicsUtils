@@ -3,7 +3,6 @@
 // rtulwin@gmail.com
 //
 
-#import <CoreGraphics/CoreGraphics.h>
 #import "KSHorizontalScrollingMenu.h"
 
 @implementation KSHorizontalScrollingMenu {
