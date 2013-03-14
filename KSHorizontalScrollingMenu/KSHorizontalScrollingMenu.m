@@ -151,15 +151,41 @@
         menuElements = [NSMutableArray arrayWithArray:elements];
 
         for (UIView * element in menuElements) {
-            UITapGestureRecognizer * tapGestureRecognizer = [[UITapGestureRecognizer alloc]
-                    initWithTarget:self
-                            action:@selector(objectTapped:)];
-            [element addGestureRecognizer:tapGestureRecognizer];
-            element.userInteractionEnabled = YES;
-            [menuScroll addSubview:element];
+            if ([element isKindOfClass:[UIView class]]) {
+                UITapGestureRecognizer * tapGestureRecognizer = [[UITapGestureRecognizer alloc]
+                        initWithTarget:self
+                                action:@selector(objectTapped:)];
+                [element addGestureRecognizer:tapGestureRecognizer];
+                element.userInteractionEnabled = YES;
+                [menuScroll addSubview:element];
+            } else {
+                NSLog(@"KSHorizontalScrollingMenu: element is not UIView");
+            }
         }
     }
     [self setNeedsLayout];
 }
+
+- (void)setupWithStrings:(NSArray *)strings Font:(UIFont *)font TextColor:(UIColor *)color {
+    NSMutableArray *elementArray = [[NSMutableArray alloc] initWithCapacity:strings.count];
+
+    for (NSString *elementString in strings) {
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.text = elementString;
+        label.textColor = color;
+        label.font = font;
+        label.backgroundColor = [UIColor clearColor];
+        label.textAlignment = UITextAlignmentCenter;
+        [elementArray addObject:label];
+    }
+
+    for (UIView *view in elementArray) {
+        [view sizeToFit];
+        view.frame = CGRectMake(0, 0, view.bounds.size.width + 30, view.bounds.size.height);
+    }
+
+    [self setupWithElements:elementArray];
+}
+
 
 @end

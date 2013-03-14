@@ -24,4 +24,6 @@
 - (void)removeElementAtIndex:(NSInteger)index;
 - (void)setupWithElements:(NSArray *)elements;
 
+- (void)setupWithStrings:(NSArray *)strings Font:(UIFont *)font TextColor:(UIColor *)color;
+
 @end
