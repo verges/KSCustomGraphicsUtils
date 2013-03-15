@@ -131,7 +131,7 @@
         } else {
             for (UIView * element in menuElements) {
                if (menuScroll.contentOffset.x  + self.bounds.size.width/2 > element.frame.origin.x &&
-                       menuScroll.contentOffset.x  + self.bounds.size.width/2 < element.frame.origin.x + element.bounds.size.width) {
+                       menuScroll.contentOffset.x  + self.bounds.size.width/2 <= element.frame.origin.x + element.bounds.size.width) {
                     chosenElement = element;
                }
             }
