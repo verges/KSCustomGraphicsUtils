@@ -166,7 +166,7 @@
     [self setNeedsLayout];
 }
 
-- (void)setupWithStrings:(NSArray *)strings Font:(UIFont *)font TextColor:(UIColor *)color {
+- (void)setupWithStrings:(NSArray *)strings font:(UIFont *)font textColor:(UIColor *)color horizontalMargin:(CGFloat)horizontalMargin verticalMargin:(CGFloat)verticalMargin {
     NSMutableArray *elementArray = [[NSMutableArray alloc] initWithCapacity:strings.count];
 
     for (NSString *elementString in strings) {
@@ -181,7 +181,8 @@
 
     for (UIView *view in elementArray) {
         [view sizeToFit];
-        view.frame = CGRectMake(0, 0, view.bounds.size.width + 30, view.bounds.size.height);
+        view.frame = CGRectMake(0, 0, view.bounds.size.width + horizontalMargin,
+                view.bounds.size.height + verticalMargin);
     }
 
     [self setupWithElements:elementArray];
