@@ -77,7 +77,7 @@
     [self scrollToElement:view];
 }
 
-- (void)scrollToElement:(UIView *)element {
+- (void) scrollToElement:(UIView *)element {
     [menuScroll setContentOffset:CGPointMake(element.frame.origin.x - menuScroll.bounds.size.width/2 +
             element.bounds.size.width/2, 0) animated:YES];
 }
@@ -88,8 +88,8 @@
 
 - (void)selectElementAtIndex:(NSInteger)index {
     [self scrollToIndex:index];
-    if ([delegate respondsToSelector:@selector(elementSelectedAtIndex:)]) {
-        [delegate elementSelectedAtIndex:index];
+    if ([delegate respondsToSelector:@selector(elementSelectedAtIndex:withMenu:)]) {
+        [delegate elementSelectedAtIndex:index withMenu:self];
     }
 }
 
@@ -138,8 +138,8 @@
         }
 
         [self scrollToElement:chosenElement];
-        if ([delegate respondsToSelector:@selector(elementSelectedAtIndex:)]) {
-                [delegate elementSelectedAtIndex:[menuElements indexOfObject:chosenElement]];
+        if ([delegate respondsToSelector:@selector(elementSelectedAtIndex:withMenu:)]) {
+                [delegate elementSelectedAtIndex:[menuElements indexOfObject:chosenElement] withMenu:self];
         }
 
         NSLog(@"%f", menuScroll.contentOffset.x);

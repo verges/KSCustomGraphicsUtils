@@ -6,10 +6,12 @@
 
 #import <Foundation/Foundation.h>
 
+@class KSHorizontalScrollingMenu;
+
 @protocol KSHorizontalScrollingMenuDelegate <NSObject>
 
 @required
-    - (void)elementSelectedAtIndex:(NSInteger)index;
+- (void)elementSelectedAtIndex:(NSInteger)index withMenu:(KSHorizontalScrollingMenu *)menu;
 @end
 
 @interface KSHorizontalScrollingMenu : UIView <UIScrollViewDelegate>
